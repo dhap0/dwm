@@ -1758,7 +1758,8 @@ tag(const Arg *arg)
 			arrange(selmon);
 		}
 		else {
-			
+				
+			unfocus(selmon->sel, 1);
 			sendmon(selmon->sel, dst);
 			focus(NULL);
 			arrange(selmon);
@@ -2208,6 +2209,7 @@ view(const Arg *arg)
 
 	Monitor *dst = tagmonitor(arg);
 	if (dst != selmon){
+		unfocus(selmon->sel, 1);
 		selmon = dst;
 		focus(NULL);
 	}
