@@ -63,6 +63,10 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 
+/* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
+static char *statuscmds[] = { "notify-send Mouse$BUTTON" };
+static char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
       { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -75,12 +79,16 @@ static Key keys[] = {
 			{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 			{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 			{ MODKEY,                       XK_Return, zoom,           {0} },
-			{ MODKEY,                       XK_Tab,    view,           {0} },
+			//{ MODKEY,                       XK_Tab,    view,           {0} },
+			{ MODKEY|ShiftMask,             XK_Tab,    spawn,           SHCMD("~/.local/bin/swapKeyboardLy.sh")},
+			{ MODKEY,                       XK_Tab,    swaptags,           {0}},
 			{ MODKEY,             					XK_q,      killclient,     {0} },
 			{ MODKEY,	                			XK_w,      spawn,	   SHCMD("feh --randomize --bg-scale --no-xinerama ~/wallpapers/*")},
 			{ 0,	                					XK_Print,   spawn,	   SHCMD("flameshot gui")},
-			{ 0,	                			XK_F3,      spawn,	   SHCMD("xbacklight -10%")},
-			{ 0,	                			XK_F4,      spawn,	   SHCMD("xbacklight +10%")},
+			{ 0,	                			XK_F1,      spawn,	   SHCMD("volume 1")},
+			{ 0,	                			XK_F2,      spawn,	   SHCMD("volume 2")},
+			{ 0,	                			XK_F3,      spawn,	   SHCMD("volume 3")},
+			{ 0,	                			XK_F4,      spawn,	   SHCMD("volume 4")},
 			{ 0,	                			XK_F6,      spawn,	   SHCMD("playerctl previous")},
 			{ 0,	                			XK_F7,      spawn,	   SHCMD("playerctl play-pause")},
 			{ 0,	                			XK_F8,      spawn,	   SHCMD("playerctl next")},
@@ -118,7 +126,12 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
+	{ ClkStatusText,        0,              Button4,        sigdwmblocks,   {.i = 4} },
+	{ ClkStatusText,        0,              Button5,        sigdwmblocks,   {.i = 5} },
+	{ ClkStatusText,        ShiftMask,      Button1,        sigdwmblocks,   {.i = 6} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
