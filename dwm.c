@@ -1773,33 +1773,46 @@ swaptags(const Arg *arg)
 	Monitor *lm, *rm;
 	lm = mons;
 	rm = lm->next;
+	int nl, nr;
+	nl = nr = 0;
 
 //	Monitor *rmaux = ecalloc(1, sizeof(Monitor));
-	Client *aux[20] = {NULL};
-	int i = 0;
+	Client *auxl[20] = {NULL};
+	Client *auxr[20] = {NULL};
 	unsigned int ltag = lm->tagset[lm->seltags];
 	unsigned int rtag = rm->tagset[rm->seltags];
 	
 
-	for(Client *c = lm->clients; c != NULL && i < 20 ; c = c->next){
+	for(Client *c = lm->clients; c != NULL && nl < 20 ; c = c->next){
 		if((c->tags & ltag)){
-			aux[i++] = c;
+			auxl[nl++] = c;
 		}
 	}
-
-	for(Client *c = rm->clients; c != NULL ; c = c->next){
+	for(Client *c = rm->clients; c != NULL && nr < 20 ; c = c->next){
 		if((c->tags & rtag)){
-			sendmon(c,lm);
-			focus(NULL);
-			arrange(lm);
+			auxr[nr++] = c;
 		}
 	}
 	
-	for(i = 0; aux[i] != NULL && i < 20; i++){
-			sendmon(aux[i],rm);
+//	for(Client *c = rm->clients; c != NULL ; c = c->next){
+//		if((c->tags & rtag)){
+//			sendmon(c,lm);
+//			focus(NULL);
+//			arrange(lm);
+//		}
+//	}
+	
+	for(int i = nl-1; i >= 0 && auxl[i] != NULL ; i--){
+			sendmon(auxl[i],rm);
 			focus(NULL);
 			arrange(rm);
 	}
+	for(int i = nr-1; i >= 0 && auxr[i] != NULL ; i--){
+			sendmon(auxr[i],lm);
+			focus(NULL);
+			arrange(lm);
+	}
+
 }
 
 void

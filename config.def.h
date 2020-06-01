@@ -6,7 +6,7 @@ static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10", "JoyPixels:pixelsize=10:antialias=true:autohint=true" };
+static const char *fonts[]          = {"monospace:size=10", "JoyPixels:pixelsize=10:antialias=true:autohint=true" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -81,9 +81,11 @@ static Key keys[] = {
 			{ MODKEY,                       XK_Return, zoom,           {0} },
 			//{ MODKEY,                       XK_Tab,    view,           {0} },
 			{ MODKEY|ShiftMask,             XK_Tab,    spawn,           SHCMD("~/.local/bin/swapKeyboardLy.sh")},
+			{ 0,             								XK_Caps_Lock,    spawn,           SHCMD("pkill -RTMIN+5 dwmblocks")},
+			{ 0,             							XK_Num_Lock,    spawn,           SHCMD("pkill -RTMIN+5 dwmblocks")},
 			{ MODKEY,                       XK_Tab,    swaptags,           {0}},
 			{ MODKEY,             					XK_q,      killclient,     {0} },
-			{ MODKEY,	                			XK_w,      spawn,	   SHCMD("feh --randomize --bg-scale --no-xinerama ~/wallpapers/*")},
+			{ MODKEY,	                			XK_w,      spawn,	   SHCMD("feh --randomize --bg-scale --no-xinerama ~/.wallpapers/*")},
 			{ 0,	                					XK_Print,   spawn,	   SHCMD("flameshot gui")},
 			{ 0,	                			XK_F1,      spawn,	   SHCMD("volume 1")},
 			{ 0,	                			XK_F2,      spawn,	   SHCMD("volume 2")},
@@ -94,8 +96,9 @@ static Key keys[] = {
 			{ 0,	                			XK_F8,      spawn,	   SHCMD("playerctl next")},
 			{ MODKEY|ShiftMask,        			XK_l,      spawn,	   SHCMD("lock")},
 			{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+			{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[2]} },
+			{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[1]} },
 			{ MODKEY,                       XK_f,      togglefullscr,  {0} },
-			{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 			{ MODKEY,                       XK_space,  setlayout,      {0} },
 			{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 			{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
