@@ -199,6 +199,7 @@ static void run(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
+static void sendmon2tag(Client *c, Monitor *m, unsigned int tags);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
@@ -1486,6 +1487,21 @@ sendmon(Client *c, Monitor *m)
 }
 
 void
+sendmon2tag(Client *c, Monitor *m, unsigned int tags)
+{
+	if (c->mon == m)
+		return;
+	unfocus(c, 1);
+	detach(c);
+	detachstack(c);
+	c->mon = m;
+	c->tags = tags; 
+	attach(c);
+	attachstack(c);
+	focus(NULL);
+	arrange(NULL);
+}
+void
 setclientstate(Client *c, long state)
 {
 	long data[] = { state, None };
@@ -1760,7 +1776,8 @@ tag(const Arg *arg)
 		else {
 				
 			unfocus(selmon->sel, 1);
-			sendmon(selmon->sel, dst);
+
+			sendmon2tag(selmon->sel, dst, (arg->ui & TAGMASK));
 			focus(NULL);
 			arrange(selmon);
 		}
