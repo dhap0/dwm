@@ -216,6 +216,8 @@ static void swaptags(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static Monitor *tagmonitor(const Arg *arg);
+static void tileleft(Monitor *);
+static void tileright(Monitor *);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
@@ -1841,7 +1843,33 @@ tagmon(const Arg *arg)
 }
 
 void
-tile(Monitor *m)
+tileright(Monitor *m)
+{
+	unsigned int i, n, h, mw, my, ty;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww - m->gappx;
+	for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
+			resize(c, m->wx + (m->ww - mw) + m->gappx, m->wy + my, mw - (2*c->bw) - m->gappx, h - (2*c->bw), 0);
+			my += HEIGHT(c) + m->gappx;
+		} else {
+			h = (m->wh - ty) / (n - i) - m->gappx;
+			resize(c, m->wx +  m->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gappx, h - (2*c->bw), 0);
+			ty += HEIGHT(c) + m->gappx;
+		}
+}
+
+void
+tileleft(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;
@@ -1864,6 +1892,15 @@ tile(Monitor *m)
 			resize(c, m->wx + mw + m->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gappx, h - (2*c->bw), 0);
 			ty += HEIGHT(c) + m->gappx;
 		}
+}
+
+void
+tile(Monitor *m)
+{
+	if ( m == mons)
+		tileright(m);
+	else
+		tileleft(m);
 }
 
 void
@@ -2236,19 +2273,27 @@ tagmonitor(const Arg *arg){
 void
 view(const Arg *arg)
 {
-
-	Monitor *dst = tagmonitor(arg);
-	if (dst != selmon){
-		unfocus(selmon->sel, 1);
-		selmon = dst;
-		focus(NULL);
+	unsigned int ui = arg->ui;
+	if (ui != ~0) {
+		Monitor *dst = tagmonitor(arg);
+			if (dst != selmon){
+				unfocus(selmon->sel, 1);
+				selmon = dst;
+				focus(NULL);
+			}
+	} else
+	{
+		ui = selmon->tagset[selmon->seltags];
+		Client *c;
+		for(c = selmon->clients; c; c = c->next)
+				ui |= c->tags == 255 ? 0 : c->tags;
+	
 	}
-
-	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+	if ((ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
 	selmon->seltags ^= 1; /* toggle sel tagset */
-	if (arg->ui & TAGMASK)
-		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+	if (ui & TAGMASK)
+		selmon->tagset[selmon->seltags] = ui & TAGMASK;
 	focus(NULL);
 	arrange(selmon);
 }
