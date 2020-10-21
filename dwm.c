@@ -1800,6 +1800,14 @@ swaptags(const Arg *arg)
 	Monitor *lm, *rm;
 	lm = mons;
 	rm = lm->next;
+	Client *cf1, *cf2;
+	cf1 = cf2 = NULL;
+//	int lf, rf;
+//	lf = rf = 0;
+//  if(lm->sel && lm->sel->isfullscreen)
+//    setfullscreen(lm->sel, lf++);
+//	if(rm->sel && rm->sel->isfullscreen)
+//    setfullscreen(rm->sel, rf++);
 	int nl, nr;
 	nl = nr = 0;
 
@@ -1812,11 +1820,22 @@ swaptags(const Arg *arg)
 
 	for(Client *c = lm->clients; c != NULL && nl < 20 ; c = c->next){
 		if((c->tags & ltag)){
+			if(c->isfullscreen ){
+	    	setfullscreen(c, 0);
+				if(!cf1)
+					cf1 = c;
+			}
 			auxl[nl++] = c;
+
 		}
 	}
 	for(Client *c = rm->clients; c != NULL && nr < 20 ; c = c->next){
 		if((c->tags & rtag)){
+			if(c->isfullscreen){
+	    	setfullscreen(c, 0);
+				if(!cf2)
+					cf2 = c;
+			}
 			auxr[nr++] = c;
 		}
 	}
@@ -1831,15 +1850,22 @@ swaptags(const Arg *arg)
 	
 	for(int i = nl-1; i >= 0 && auxl[i] != NULL ; i--){
 			sendmon(auxl[i],rm);
-			focus(NULL);
-			arrange(rm);
+			//focus(NULL);
+			//arrange(rm);
 	}
 	for(int i = nr-1; i >= 0 && auxr[i] != NULL ; i--){
 			sendmon(auxr[i],lm);
-			focus(NULL);
-			arrange(lm);
+			//focus(NULL);
+			//arrange(lm);
 	}
-
+	if(cf1)
+		setfullscreen(cf1, 1);
+	if(cf2)
+		setfullscreen(cf2, 1);
+	focus(NULL);
+	arrange(rm);
+	arrange(lm);
+	
 }
 
 void
