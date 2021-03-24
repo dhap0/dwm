@@ -87,14 +87,14 @@ static Key keys[] = {
 			{ MODKEY,             					XK_q,      killclient,     {0} },
 			{ MODKEY,	                			XK_w,      spawn,	   SHCMD("feh --randomize --bg-scale --no-xinerama ~/.wallpapers/*")},
 			{ 0,	                					XK_Print,   spawn,	   SHCMD("flameshot gui")},
-			{ 0,	                			XK_F1,      spawn,	   SHCMD("volume 1")},
+			{ 0,	                			XK_F1,      spawn,	   SHCMD("pavucontrol")},
 			{ 0,	                			XK_F2,      spawn,	   SHCMD("volume 2")},
 			{ 0,	                			XK_F3,      spawn,	   SHCMD("volume 3")},
 			{ 0,	                			XK_F4,      spawn,	   SHCMD("volume 4")},
 			{ 0,	                			XK_F6,      spawn,	   SHCMD("playerctl previous")},
 			{ 0,	                			XK_F7,      spawn,	   SHCMD("playerctl play-pause")},
 			{ 0,	                			XK_F8,      spawn,	   SHCMD("playerctl next")},
-			{ MODKEY|ShiftMask,        			XK_l,      spawn,	   SHCMD("lock")},
+			{ MODKEY|ShiftMask,        			XK_l,      spawn,	   SHCMD("slimlock")},
 			{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 			{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[2]} },
 			{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[1]} },
@@ -119,7 +119,7 @@ static Key keys[] = {
 			TAGKEYS(                        XK_7,                      6)
 			TAGKEYS(                        XK_8,                      7)
 			TAGKEYS(                        XK_9,                      8)
-			{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+//	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
 /* button definitions */
